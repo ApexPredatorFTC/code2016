@@ -119,8 +119,8 @@ public class RealAutoBlue extends LinearOpMode {
         flipperRight = hardwareMap.servo.get("flipperRight");
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         boot = hardwareMap.servo.get("boot");
-        flipperRight.setPosition(0.158);
-        flipperLeft.setPosition(0.932);
+        flipperRight.setPosition(0);
+        flipperLeft.setPosition(1);
         boot.setPosition(0.75);
 
         //Color Sensor
@@ -146,27 +146,29 @@ public class RealAutoBlue extends LinearOpMode {
         gyro.resetZAxisIntegrator();
 
         //Do Stuff
-        shoot(500, 1);
-        Move(60, 1, 180);
-        GyroTurn(135);
-        untilButton(0.4);
-        squareWall(0.4);
-        flipperDownBlue();
-        findBeacon(false, 0.21);
-        Move(2.5, 0.4, 0);
-        chooseColor(false);
-        Move(2.5, 0.7, 180);
-        Move(38, 1, 270);
-        untilButton(0.4);
-        squareWall(0.4);
-
-        flipperDownBlue();
-
-        findBeacon(false, 0.21);
-        Move(2.5, 0.4, 0);
-        chooseColor(false);
-        Move(5, 0.8, 180);
-
+        if (opModeIsActive()) {
+            shoot(500, 1);
+            Move(60, 1, 180);
+            GyroTurn(135);
+            untilButton(0.4);
+            squareWall(0.4);
+            flipperDownBlue();
+            Move(1.2, 0.4, 180);
+            findBeacon(false, 0.21);
+            Move(2.5, 0.5, 0);
+            chooseColor(false);
+            Move(2.5, 1, 180);
+            Move(38, 1, 270);
+            untilButton(0.4);
+            squareWall(0.4);
+            flipperDownBlue();
+            Move(1.2, 0.3, 180);
+            findBeacon(false, 0.21);
+            Move(2.5, 0.4, 0);
+            chooseColor(false);
+            Move(5, 0.8, 180);
+            Move(70, 1, 135);
+        }
 
     }
 
@@ -325,8 +327,10 @@ public class RealAutoBlue extends LinearOpMode {
         if (opModeIsActive()) {
             double direction = 0;
 
-            flipperLeft.setPosition(0.2888);
-            flipperRight.setPosition(0.699999999);
+            flipperRight.setPosition(0.624);
+            flipperLeft.setPosition(0.375);
+            sleep(200);
+
             gyro.resetZAxisIntegrator();
 
             frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -414,7 +418,7 @@ public class RealAutoBlue extends LinearOpMode {
     }
 
     public void flipperOut() {
-        flipperRight.setPosition(0.59);
+        flipperRight.setPosition(0.62);
         flipperLeft.setPosition(.38);
     }
 
