@@ -13,11 +13,26 @@ public class MotorSet extends LinearOpMode{
     DcMotor shooter;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode()
+    {
         shooter = hardwareMap.dcMotor.get("shooter");
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        shooter.setPower(1);
-        sleep(200);
-        shooter.setPower(0);
+        waitForStart();
+
+        while (opModeIsActive())
+        {
+            if(gamepad1.x)
+            {
+                shooter.setPower(1.0);
+                telemetry.addData("Button Pressed", 1.0);
+                telemetry.update();
+            }
+            else
+            {
+                shooter.setPower(0);
+            }
+        }
     }
 }

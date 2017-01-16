@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcodez;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -105,6 +105,12 @@ public class TeleOP extends LinearOpMode{
             }
             if (gamepad2.dpad_up){
                 boot.setPosition(0.15);
+            }
+            if (gamepad2.x){
+                shooter.setPower(1);
+            }
+            else {
+                shooter.setPower(0);
             }
 
 
