@@ -219,6 +219,7 @@ public class RealAutoRed extends LinearOpMode {
             Move(40, 1, 90);
             untilButton(0.35);
             squareWall(0.35);
+
             //Move(3, 0.7, 180);
             Move(1.5, 0.3, 180);
             flipperIn();
