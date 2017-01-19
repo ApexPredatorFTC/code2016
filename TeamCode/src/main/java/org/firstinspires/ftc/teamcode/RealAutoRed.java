@@ -57,6 +57,8 @@ public class RealAutoRed extends LinearOpMode {
 
     public static final I2cAddr c1Addr = I2cAddr.create7bit(0x1E);
     public static final I2cAddr c2Addr = I2cAddr.create7bit(0x26);
+    public static final I2cAddr c3Addr = I2cAddr.create8bit(0x50);
+
     public static final int c1StartReg = 0x04;
     public static final int c1ReadLength = 26;
     public static final int c1CmdReg = 0x03;
@@ -72,14 +74,19 @@ public class RealAutoRed extends LinearOpMode {
     public I2cDeviceSynch c1Reader;
     public I2cDevice c2;
     public I2cDeviceSynch c2Reader;
+    public I2cDevice c3;
+    public I2cDeviceSynch c3Reader;
+
 
     //I2C Result arrays
     byte[] c1Cache;
     byte[] c2Cache;
+    byte[] c3Cache;
+
 
     @Override
 
-    public void runOpMode()  {
+    public void runOpMode() {
         //Motors
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
         backLeft = hardwareMap.dcMotor.get("backLeft");
@@ -149,10 +156,17 @@ public class RealAutoRed extends LinearOpMode {
         //Color Sensor
         c1 = hardwareMap.i2cDevice.get("cSensor1");
         c2 = hardwareMap.i2cDevice.get("cSensor2");
+        c3 = hardwareMap.i2cDevice.get("cSensor3");
+
         c1Reader = new I2cDeviceSynchImpl(c1, c1Addr, false);
         c2Reader = new I2cDeviceSynchImpl(c2, c2Addr, false);
+        c3Reader = new I2cDeviceSynchImpl(c3, c3Addr, false);
+
+
         c1Reader.engage();
         c2Reader.engage();
+        c3Reader.engage();
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -160,6 +174,7 @@ public class RealAutoRed extends LinearOpMode {
         //Set Color Sensor to Passive Mode
         c1Reader.write8(c1CmdReg, c1ActiveCmd);
         c2Reader.write8(c1CmdReg, c1ActiveCmd);
+        c3Reader.write8(c1CmdReg, c1ActiveCmd);
         //Wait for the user to press play and reset the timer
 
 
@@ -183,38 +198,39 @@ public class RealAutoRed extends LinearOpMode {
             telemetry.update();
         }
         gyro.resetZAxisIntegrator();
-
+        boolean on = true;
         //Do Stuff
-        while(opModeIsActive()) {
-            shoot(600, 1);
-            Move(60, 1, 45);
+        while (opModeIsActive() && on == true) {
+            shoot(550, 1);
+            Move(61.5, 1, 45);
             untilButton(0.35);
             squareWall(0.35);
-            flipperDownRed();
-            Move(.8, 0.3, 180);
+            Move(1.5, 0.3, 180);
+            flipperIn();
             //Move(3, 0.4, 180);
             //flipperIn();
             //Move(3.1, 0.4, 0);
-            findBeacon(true, 0.17);
-            Move(2 , 0.3, 90);
-            Move(3.0, 0.4, 0);
+            findLine(true, 0.18);
+            Move(2.5, 0.25, 0);
             chooseColor(true);
             //Move(36, 0.8, 108);
-            Move(3.0, 0.4, 180);
+            Move(1.5, 0.4, 180);
             flipperIn();
-            Move(41, 1, 90);
+            Move(40, 1, 90);
             untilButton(0.35);
             squareWall(0.35);
             //Move(3, 0.7, 180);
-            flipperDownRed();
-            Move(.8, 0.3, 180);
+            Move(1.5, 0.3, 180);
+            flipperIn();
+
             //Move(3.15, 0.7, 0);
-            findBeacon(true, 0.17);
+            findLine(true, 0.18);
             //lMove(2, 0.3, 0);
-            Move(2.5, 0.4, 90);
+            Move(2.5, 0.4, 0);
             chooseColor(true);
             Move(5, 0.8, 180);
             //Move(70, 1, 225);
+            on = false;
         }
     }
 
@@ -367,7 +383,7 @@ public class RealAutoRed extends LinearOpMode {
         }
     }
 
-    public void untilButton(double speed)  {
+    public void untilButton(double speed) {
         if (opModeIsActive()) {
             double direction = 0;
 
@@ -429,7 +445,7 @@ public class RealAutoRed extends LinearOpMode {
         }
     }
 
-    public void squareWall(double speed)  {
+    public void squareWall(double speed) {
         if (opModeIsActive()) {
             frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -462,13 +478,13 @@ public class RealAutoRed extends LinearOpMode {
         flipperLeft.setPosition(.38);
     }
 
-    public void flipperDownBlue()  {
+    public void flipperDownBlue() {
         flipperRight.setPosition(0);
         flipperLeft.setPosition(0);
         sleep(400);
     }
 
-    public void flipperDownRed()  {
+    public void flipperDownRed() {
         flipperLeft.setPosition(1);
         flipperRight.setPosition(1);
         sleep(400);
@@ -525,12 +541,13 @@ public class RealAutoRed extends LinearOpMode {
                 leftBlue = (c2Cache[14] & 0xff);
                 */
 
-                rightRed =(c1Cache[6] & 0xff);
+                rightRed = (c1Cache[6] & 0xff);
                 leftRed = (c2Cache[6] & 0xff);
                 rightBlue = (c1Cache[8] & 0xff);
                 leftBlue = (c2Cache[8] & 0xff);
 
                 // adjust relative speed based on heading error.
+
                 double error = getError(0);
                 double steer = getSteer(error, P_DRIVE_COEFF);
 
@@ -580,7 +597,7 @@ public class RealAutoRed extends LinearOpMode {
 
     }
 
-    public void shoot(long time, double power)  {
+    public void shoot(long time, double power) {
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setPower(power);
@@ -588,7 +605,7 @@ public class RealAutoRed extends LinearOpMode {
         shooter.setPower(0);
     }
 
-    public void chooseColor(boolean color)  {
+    public void chooseColor(boolean color) {
         if (opModeIsActive()) {
             boolean on = false;
             while (opModeIsActive() && (on == false)) {
@@ -610,34 +627,154 @@ public class RealAutoRed extends LinearOpMode {
                     if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[8] & 0xff) == 255)) {
                         telemetry.addLine("a");
                         telemetry.update();
-                        Move(5, 0.25, 90);
+                        Move(4.5, 0.25, 90);
+                        Move(0.5, 0.25, 0);
                         telemetry.addLine("b");
                         telemetry.update();
                         on = true;
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
                         telemetry.addLine("c");
                         telemetry.update();
-                        Move(5, 0.25
-                                , 270);
+                        Move(4.5, 0.25, 270);
+                        Move(0.5, 0.25, 0);
                         telemetry.addLine("d");
                         telemetry.update();
                         on = true;
                     }
                 } else {
                     if ((c2Cache[8] & 0xff) == 255 && (c1Cache[6] & 0xff) == 255) {
-                        Move(5, 0.42, 270);
+                        Move(4.5, 0.42, 270);
+                        Move(0.5, 0.25, 0);
                         on = true;
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
-                        Move(5, 0.42, 90);
+                        Move(4.5, 0.42, 90);
+                        Move(0.5, 0.25, 0);
                         on = true;
                     }
 
                 }
             }
         }
+    }
 
+    public void findLine(boolean direction, double speed) {
+        if (opModeIsActive()) {
+            double colorWhite = 180;
+            double rightleft;
+            if (direction) {
+                rightleft = 90;
+                rightleft = rightleft * Math.PI / 180;
+            } else {
+                rightleft = 270;
+                rightleft = rightleft * Math.PI / 180;
+            }
+
+            gyro.resetZAxisIntegrator();
+
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            double bottomWhite = 0;
+            double highWhite = 0;
+
+            while (opModeIsActive() && (((bottomWhite) < colorWhite))) {
+                c3Reader.write8(c1CmdReg, c1ActiveCmd);
+                c3Cache = c3Reader.read(c1StartReg, c1ReadLength);
+
+
+                bottomWhite = (c3Cache[16] & 0xff);
+
+                //TEST getError(rightleft)
+                //Orig: getError(0)
+                double error = getError(0);
+                double steer = getSteer(error, P_DRIVE_COEFF);
+
+                double frontLeftSpeed = (speed * Math.cos(rightleft) + steer);
+                double frontRightSpeed = (speed * Math.sin(rightleft)) + steer;
+                double backRightSpeed = (speed * Math.cos(rightleft)) - steer;
+                double backLeftSpeed = (speed * Math.sin(rightleft)) - steer;
+
+                // Normalize speeds if any one exceeds +/- 1.0;
+                double max1 = Math.max(Math.abs(frontLeftSpeed), Math.abs(frontRightSpeed));
+                double max2 = Math.max(Math.abs(backRightSpeed), Math.abs(backLeftSpeed));
+                double max = Math.max(max1, max2);
+                if (max > 1.0) {
+                    frontLeftSpeed /= max;
+                    frontRightSpeed /= max;
+                    backRightSpeed /= max;
+                    backLeftSpeed /= max;
+
+                }
+
+                frontLeft.setPower(-frontLeftSpeed);
+                frontRight.setPower(-frontRightSpeed);
+                backLeft.setPower(-backLeftSpeed);
+                backRight.setPower(-backRightSpeed);
+                // Display drive status for the driver.
+                telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                telemetry.addData("Speed", "%5.2f:%5.2f:%5.2f:%5.2f", frontLeftSpeed, frontRightSpeed, backLeftSpeed, backRightSpeed);
+                telemetry.addData("Back White", bottomWhite);
+                telemetry.addData("Upper White", highWhite);
+                telemetry.update();
+
+            }
+            // Stop all motion;
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            frontLeft.setPower(0);
+            backRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
     }
 }
+   /* public void lineUpLine(boolean color){
+        if (opModeIsActive()){
+            double colorWhite = 150;
+
+            double lowWhite = 0;
+            double highWhite = 0;
+
+            while(opModeIsActive() && ((lowWhite < colorWhite) || (highWhite < colorWhite))){
+                c3Reader.write8(c1CmdReg, c1ActiveCmd);
+                c3Cache = c3Reader.read(c1StartReg, c1ReadLength);
+                c4Reader.write8(c1CmdReg, c1ActiveCmd);
+                c4Cache = c4Reader.read(c1StartReg, c1ReadLength);
+                highWhite = (c4Cache[16] &0xff);
+                lowWhite = (c3Cache[16] &0xff);
+                telemetry.addData("Back White", lowWhite);
+                telemetry.addData("Upper White", highWhite);
+                telemetry.update();
+
+                if (color){
+                    if (lowWhite < colorWhite){
+                        frontRight.setPower(-0.25);
+                    }
+                    else if(highWhite < colorWhite){
+                        backLeft.setPower(-0.25);
+                    }
+                }
+                else {
+                    if (lowWhite < colorWhite){
+                        frontRight.setPower(0.25);
+                    }
+                    else if(highWhite < colorWhite){
+                        backLeft.setPower(0.25);
+                    }
+                }
+            }*/
+
+
+
+
+
 
 
 
