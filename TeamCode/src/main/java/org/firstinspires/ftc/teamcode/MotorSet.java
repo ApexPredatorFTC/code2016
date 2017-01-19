@@ -29,6 +29,9 @@ public class MotorSet extends LinearOpMode{
                 telemetry.addData("Button Pressed", 1.0);
                 telemetry.update();
             }
+            else if (gamepad1.a){
+                shooter.setPower(.8);
+            }
             else
             {
                 shooter.setPower(0);

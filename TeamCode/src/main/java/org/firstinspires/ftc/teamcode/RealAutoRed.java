@@ -172,8 +172,8 @@ public class RealAutoRed extends LinearOpMode {
         telemetry.update();
 
         //Set Color Sensor to Passive Mode
-        c1Reader.write8(c1CmdReg, c1ActiveCmd);
-        c2Reader.write8(c1CmdReg, c1ActiveCmd);
+        c1Reader.write8(c1CmdReg, c1PassiveCmd);
+        c2Reader.write8(c1CmdReg, c1PassiveCmd);
         c3Reader.write8(c1CmdReg, c1ActiveCmd);
         //Wait for the user to press play and reset the timer
 
@@ -206,7 +206,7 @@ public class RealAutoRed extends LinearOpMode {
             untilButton(0.35);
             squareWall(0.35);
             Move(1.5, 0.3, 180);
-            flipperIn();
+            flipperDownRed();
             //Move(3, 0.4, 180);
             //flipperIn();
             //Move(3.1, 0.4, 0);
@@ -222,7 +222,7 @@ public class RealAutoRed extends LinearOpMode {
 
             //Move(3, 0.7, 180);
             Move(1.5, 0.3, 180);
-            flipperIn();
+            flipperDownRed();
 
             //Move(3.15, 0.7, 0);
             findLine(true, 0.18);
@@ -230,6 +230,8 @@ public class RealAutoRed extends LinearOpMode {
             Move(2.5, 0.4, 0);
             chooseColor(true);
             Move(5, 0.8, 180);
+            flipperIn();
+
             //Move(70, 1, 225);
             on = false;
         }

@@ -172,8 +172,8 @@ public class RealAutoBlue extends LinearOpMode {
         telemetry.update();
 
         //Set Color Sensor to Passive Mode
-        c1Reader.write8(c1CmdReg, c1ActiveCmd);
-        c2Reader.write8(c1CmdReg, c1ActiveCmd);
+        c1Reader.write8(c1CmdReg, c1PassiveCmd);
+        c2Reader.write8(c1CmdReg, c1PassiveCmd);
         c3Reader.write8(c1CmdReg, c1ActiveCmd);
         while (!isStarted()) {
             telemetry.addData(">", "Robot Heading = %d", gyro.getIntegratedZValue());
@@ -185,22 +185,22 @@ public class RealAutoBlue extends LinearOpMode {
         //Do Stuff
         if (opModeIsActive()) {
             shoot(500, 1);
-            Move(61.5, 1, 315);
+            Move(72, 1, 135);
+            GyroTurn(-185);
             untilButton(0.4);
             squareWall(0.4);
             Move(1.5, 0.3, 180);
-            flipperIn();
-
+            flipperDownRed();
             findLine(false, 0.18);
-
             Move(2.5, 0.5, 0);
             chooseColor(false);
-            Move(1.5, 1, 180);
+            Move(2, 1, 180);
+            flipperIn();
             Move(40, 1, 270);
             untilButton(0.4);
             squareWall(0.4);
             Move(1.5, 0.3, 180);
-            flipperIn();
+            flipperDownRed();
 
             findLine(false, 0.18);
             Move(2.5, 0.4, 0);
