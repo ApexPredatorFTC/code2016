@@ -221,7 +221,7 @@ public class RealAutoRed extends LinearOpMode {
             Move(2.5, 0.25, 0);
             chooseColor(true);
             //Move(36, 0.8, 108);
-            Move(2, 0.4, 180);
+            Move(3, 0.4, 180);
 
             Move(40, 1, 90);
             untilButton(0.35);
@@ -236,9 +236,10 @@ public class RealAutoRed extends LinearOpMode {
             //lMove(2, 0.3, 0);
             Move(2.5, 0.4, 0);
             chooseColor(true);
-            Move(5, 0.8, 180);
+            Move(3, 0.8, 180);
             flipperIn();
-
+            Move(60,1,218);
+            GyroTurn(90);
             //Move(70, 1, 225)
             on = false;
         }
@@ -637,7 +638,7 @@ public class RealAutoRed extends LinearOpMode {
                     if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[6] & 0xff) != 255)) {
                         telemetry.addLine("a");
                         telemetry.update();
-                        Move(4.5, 0.25, 90);
+                        Move(3.25, 0.25, 90);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("b");
                         telemetry.update();
@@ -645,7 +646,7 @@ public class RealAutoRed extends LinearOpMode {
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[6] & 0xff) != 255) {
                         telemetry.addLine("c");
                         telemetry.update();
-                        Move(4.5, 0.25, 270);
+                        Move(3.25, 0.25, 270);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("d");
                         telemetry.update();
@@ -653,11 +654,11 @@ public class RealAutoRed extends LinearOpMode {
                     }
                 } else {
                     if ((c2Cache[8] & 0xff) == 255 && (c1Cache[8] & 0xff) != 255) {
-                        Move(4.5, 0.42, 270);
+                        Move(3.25, 0.42, 270);
                         Move(0.5, 0.25, 0);
                         on = true;
                     } else if ((c2Cache[8] & 0xff) != 255 && (c1Cache[8] & 0xff) == 255) {
-                        Move(4.5, 0.42, 90);
+                        Move(3.25, 0.42, 90);
                         Move(0.5, 0.25, 0);
                         on = true;
                     }

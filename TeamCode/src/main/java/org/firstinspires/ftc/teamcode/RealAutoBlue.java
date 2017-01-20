@@ -114,10 +114,10 @@ public class RealAutoBlue extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontRight.setMaxSpeed(3500);
-        frontLeft.setMaxSpeed(3500);
-        backLeft.setMaxSpeed(3500);
-        backRight.setMaxSpeed(3500);
+        frontRight.setMaxSpeed(4000);
+        frontLeft.setMaxSpeed(4000);
+        backLeft.setMaxSpeed(4000);
+        backRight.setMaxSpeed(4000);
 
         //Touch
         touchRight = hardwareMap.touchSensor.get("touchRight");
@@ -181,36 +181,39 @@ public class RealAutoBlue extends LinearOpMode {
             idle();
         }
         gyro.resetZAxisIntegrator();
-
+        boolean on = true;
         //Do Stuff
-        if (opModeIsActive()) {
+        while (opModeIsActive() && on == true) {
             shoot(500, 1);
             ballDoorDown();
             sleep(1400);
             shoot(500, 1);
 
-            Move(72, 1, 135);
-            GyroTurn(-185);
+            Move(73, 1, 130);
+            GyroTurn(180);
             untilButton(0.4);
             squareWall(0.4);
             Move(1.5, 0.3, 180);
-            flipperDownRed();
+            flipperDownBlue();
             findLine(false, 0.18);
             Move(2.5, 0.5, 0);
             chooseColor(false);
-            Move(2, 1, 180);
+            Move(3, 1, 180);
 
-            Move(40, 1, 270);
+            Move(44, 1, 270);
             untilButton(0.4);
             squareWall(0.4);
             Move(1.5, 0.3, 180);
-            flipperDownRed();
+            flipperDownBlue();
 
             findLine(false, 0.18);
             Move(2.5, 0.4, 0);
 
             chooseColor(false);
-            Move(5, 0.8, 180);
+            Move(3, 0.8, 180);
+            Move(60, 1, 132);
+            GyroTurn(90);
+            on = false;
             //Move(70, 1, 135);
         }
 
@@ -614,7 +617,7 @@ public class RealAutoBlue extends LinearOpMode {
                     if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[6] & 0xff) != 255)) {
                         telemetry.addLine("a");
                         telemetry.update();
-                        Move(4.5, 0.25, 90);
+                        Move(3.25, 0.25, 90);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("b");
                         telemetry.update();
@@ -622,7 +625,7 @@ public class RealAutoBlue extends LinearOpMode {
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[6] & 0xff) != 255) {
                         telemetry.addLine("c");
                         telemetry.update();
-                        Move(4.5, 0.25, 270);
+                        Move(3.25, 0.25, 270);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("d");
                         telemetry.update();
@@ -630,11 +633,11 @@ public class RealAutoBlue extends LinearOpMode {
                     }
                 } else {
                     if ((c2Cache[8] & 0xff) == 255 && (c1Cache[8] & 0xff) != 255) {
-                        Move(4.5, 0.42, 270);
+                        Move(3.25, 0.42, 270);
                         Move(0.5, 0.25, 0);
                         on = true;
                     } else if ((c2Cache[8] & 0xff) != 255 && (c1Cache[8] & 0xff) == 255) {
-                        Move(4.5, 0.42, 90);
+                        Move(3.25, 0.42, 90);
                         Move(0.5, 0.25, 0);
                         on = true;
                     }
@@ -645,7 +648,7 @@ public class RealAutoBlue extends LinearOpMode {
     }
     public void findLine(boolean direction, double speed) {
         if (opModeIsActive()) {
-            double colorWhite = 180;
+            double colorWhite = 165;
             double rightleft;
             if (direction) {
                 rightleft = 90;
