@@ -20,9 +20,11 @@ public class TeleOP extends LinearOpMode{
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor shooter;
+    DcMotor capper;
 
     Servo flipperRight;
     Servo flipperLeft;
+    Servo ballDoor;
 
     int mode;
 
@@ -34,9 +36,11 @@ public class TeleOP extends LinearOpMode{
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backRight = hardwareMap.dcMotor.get("backRight");
         shooter = hardwareMap.dcMotor.get("shooter");
+        capper = hardwareMap.dcMotor.get("capper");
 
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         flipperRight = hardwareMap.servo.get("flipperRight");
+        ballDoor = hardwareMap.servo.get("ballDoor");
 
 
         flipperRight.setPosition(0.08);
@@ -111,7 +115,17 @@ public class TeleOP extends LinearOpMode{
                 shooter.setPower(-0.8);
             }
             else {
-                shooter.setPower(0);
+                shooter .setPower(0);
+            }
+
+            if (gamepad2.dpad_up){
+                capper.setPower(1);
+            }
+            else if (gamepad2.dpad_down){
+                capper.setPower(-1);
+            }
+            else{
+                capper.setPower(0);
             }
 
 

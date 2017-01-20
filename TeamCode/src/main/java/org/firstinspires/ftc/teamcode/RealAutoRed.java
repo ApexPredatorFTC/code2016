@@ -32,6 +32,7 @@ public class RealAutoRed extends LinearOpMode {
 
     Servo flipperRight;
     Servo flipperLeft;
+    Servo ballDoor;
 
 
     /*ColorSensor cSensor1;
@@ -148,9 +149,11 @@ public class RealAutoRed extends LinearOpMode {
         //Servos
         flipperRight = hardwareMap.servo.get("flipperRight");
         flipperLeft = hardwareMap.servo.get("flipperLeft");
+        ballDoor = hardwareMap.servo.get("ballDoor");
 
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
+        ballDoor.setPosition(1);
 
 
         //Color Sensor
@@ -201,7 +204,11 @@ public class RealAutoRed extends LinearOpMode {
         boolean on = true;
         //Do Stuff
         while (opModeIsActive() && on == true) {
-            shoot(550, 1);
+            shoot(500, 1);
+            ballDoorDown();
+            sleep(950);
+            shoot(400, 1);
+
             Move(61.5, 1, 45);
             untilButton(0.35);
             squareWall(0.35);
@@ -232,7 +239,7 @@ public class RealAutoRed extends LinearOpMode {
             Move(5, 0.8, 180);
             flipperIn();
 
-            //Move(70, 1, 225);
+            //Move(70, 1, 225)
             on = false;
         }
     }
@@ -736,6 +743,12 @@ public class RealAutoRed extends LinearOpMode {
             backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
+    }
+    public void ballDoorDown(){
+        ballDoor.setPosition(.56);
+    }
+    public void ballDoorUp(){
+        ballDoor.setPosition(1);
     }
 }
    /* public void lineUpLine(boolean color){

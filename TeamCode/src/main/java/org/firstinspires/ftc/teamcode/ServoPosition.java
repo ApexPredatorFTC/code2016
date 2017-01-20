@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoPosition extends LinearOpMode{
     Servo flipperRight;
     Servo flipperLeft;
-    Servo boot;
+    Servo ballDoor;
     double positionLeft;
     double positionRight;
     double positionBoot;
@@ -22,11 +22,11 @@ public class ServoPosition extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         flipperRight = hardwareMap.servo.get("flipperRight");
-        boot = hardwareMap.servo.get("boot");
+        ballDoor = hardwareMap.servo.get("ballDoor");
 
         flipperRight.setPosition(0);
         flipperLeft.setPosition(0);
-        boot.setPosition(0);
+        ballDoor.setPosition(0);
 
         waitForStart();
 
@@ -86,7 +86,7 @@ public class ServoPosition extends LinearOpMode{
 
             flipperLeft.setPosition(positionLeft);
             flipperRight.setPosition(positionRight);
-            boot.setPosition(positionLeft);
+            ballDoor.setPosition(positionLeft);
 
             telemetry.addData("Right Servo", positionRight);
             telemetry.addData("Left Servo", positionLeft);
