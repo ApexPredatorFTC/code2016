@@ -634,7 +634,7 @@ public class RealAutoRed extends LinearOpMode {
                 telemetry.addData("c2 Red/Blue", (c2Cache[6] & 0xff) + " " + (c2Cache[8] & 0xff));
                 telemetry.update();
                 if (color) {
-                    if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[8] & 0xff) == 255)) {
+                    if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[6] & 0xff) != 255)) {
                         telemetry.addLine("a");
                         telemetry.update();
                         Move(4.5, 0.25, 90);
@@ -642,7 +642,7 @@ public class RealAutoRed extends LinearOpMode {
                         telemetry.addLine("b");
                         telemetry.update();
                         on = true;
-                    } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
+                    } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[6] & 0xff) != 255) {
                         telemetry.addLine("c");
                         telemetry.update();
                         Move(4.5, 0.25, 270);
@@ -652,11 +652,11 @@ public class RealAutoRed extends LinearOpMode {
                         on = true;
                     }
                 } else {
-                    if ((c2Cache[8] & 0xff) == 255 && (c1Cache[6] & 0xff) == 255) {
+                    if ((c2Cache[8] & 0xff) == 255 && (c1Cache[8] & 0xff) != 255) {
                         Move(4.5, 0.42, 270);
                         Move(0.5, 0.25, 0);
                         on = true;
-                    } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
+                    } else if ((c2Cache[8] & 0xff) != 255 && (c1Cache[8] & 0xff) == 255) {
                         Move(4.5, 0.42, 90);
                         Move(0.5, 0.25, 0);
                         on = true;

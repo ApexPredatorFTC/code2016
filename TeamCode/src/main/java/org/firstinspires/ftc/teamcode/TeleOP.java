@@ -59,10 +59,10 @@ public class TeleOP extends LinearOpMode{
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        frontRight.setMaxSpeed(3500);
-        frontLeft.setMaxSpeed(3500);
-        backLeft.setMaxSpeed(3500);
-        backRight.setMaxSpeed(3500);
+        frontRight.setMaxSpeed(4500);
+        frontLeft.setMaxSpeed(4500);
+        backLeft.setMaxSpeed(4500);
+        backRight.setMaxSpeed(4500);
 
         waitForStart();
 
