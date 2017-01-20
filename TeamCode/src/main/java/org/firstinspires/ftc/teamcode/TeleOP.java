@@ -85,10 +85,10 @@ public class TeleOP extends LinearOpMode{
             float rt = 0;
 
             if(mode==1) {
-                fr = -y+x+z;
-                bk = -y+x-z;
-                lft =y+x-z;
-                rt = y+x+z;
+                fr = -y+z;
+                lft =x-z;
+                rt = x+z;
+                bk = -y-z;
             }
 
             else if (mode ==2) {

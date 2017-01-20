@@ -100,7 +100,7 @@ public class ColorI2cTest extends LinearOpMode
             telemetry.addData("Red LSB", (c1Cache[10] & 0xff) + " " + (c2Cache[10] & 0xff) + " "+ (c3Cache[10] & 0xff));
             telemetry.addData("Green LSB", (c1Cache[12] & 0xff) + " " + (c2Cache[12] & 0xff) + " "+ (c3Cache[12] & 0xff));
             telemetry.addData("Blue LSB", (c1Cache[14] & 0xff) + " " + (c2Cache[14] & 0xff) + " "+ (c3Cache[14] & 0xff));
-            telemetry.addData("White LSB", (c1Cache[16] & 0xff) + " " + (c2Cache[16] & 0xff) + " "+ (c3Cache[16] & 0xff));
+            telemetry.addData("White LSB", (c1Cache[16] & 0xff) + " " + (c2Cache[16] & 0xff) + " "+ ((c3Cache[16] & 0xff) + (256*(c3Cache[17] & 0xff))));
             telemetry.addData("Norm Red LSB", (c1Cache[18] & 0xff) + " " + (c2Cache[18] & 0xff) + " "+ (c3Cache[18] & 0xff));
             telemetry.addData("Norm Green LSB", (c1Cache[20] & 0xff) + " " + (c2Cache[20] & 0xff) + " "+ (c3Cache[20] & 0xff));
             telemetry.addData("Norm Blue LSB", (c1Cache[22] & 0xff) + " " + (c2Cache[22] & 0xff)+ " " + (c3Cache[22] & 0xff));

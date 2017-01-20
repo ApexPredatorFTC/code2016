@@ -186,8 +186,8 @@ public class RealAutoBlue extends LinearOpMode {
         if (opModeIsActive()) {
             shoot(500, 1);
             ballDoorDown();
-            sleep(1200);
-            shoot(400, 1);
+            sleep(1400);
+            shoot(500, 1);
 
             Move(72, 1, 135);
             GyroTurn(-185);
@@ -199,7 +199,7 @@ public class RealAutoBlue extends LinearOpMode {
             Move(2.5, 0.5, 0);
             chooseColor(false);
             Move(2, 1, 180);
-            flipperIn();
+
             Move(40, 1, 270);
             untilButton(0.4);
             squareWall(0.4);
@@ -670,7 +670,7 @@ public class RealAutoBlue extends LinearOpMode {
                 c3Cache = c3Reader.read(c1StartReg, c1ReadLength);
 
 
-                bottomWhite = (c3Cache[16] & 0xff);
+                bottomWhite = ((c3Cache[16] & 0xff) + (256*(c3Cache[17] & 0xff)));
 
                 //TEST getError(rightleft)
                 //Orig: getError(0)

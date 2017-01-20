@@ -206,8 +206,8 @@ public class RealAutoRed extends LinearOpMode {
         while (opModeIsActive() && on == true) {
             shoot(500, 1);
             ballDoorDown();
-            sleep(1200);
-            shoot(400, 1);
+            sleep(1400);
+            shoot(500 , 1);
 
             Move(61.5, 1, 45);
             untilButton(0.35);
@@ -221,8 +221,8 @@ public class RealAutoRed extends LinearOpMode {
             Move(2.5, 0.25, 0);
             chooseColor(true);
             //Move(36, 0.8, 108);
-            Move(1.5, 0.4, 180);
-            flipperIn();
+            Move(2, 0.4, 180);
+
             Move(40, 1, 90);
             untilButton(0.35);
             squareWall(0.35);
@@ -694,7 +694,7 @@ public class RealAutoRed extends LinearOpMode {
                 c3Cache = c3Reader.read(c1StartReg, c1ReadLength);
 
 
-                bottomWhite = (c3Cache[16] & 0xff);
+                bottomWhite = ((c3Cache[16] & 0xff) + (256*(c3Cache[17] & 0xff)));
 
                 //TEST getError(rightleft)
                 //Orig: getError(0)
