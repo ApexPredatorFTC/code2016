@@ -119,10 +119,10 @@ public class RealAutoRed extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontRight.setMaxSpeed(3500);
-        frontLeft.setMaxSpeed(3500);
-        backLeft.setMaxSpeed(3500);
-        backRight.setMaxSpeed(3500);
+        frontRight.setMaxSpeed(4000);
+        frontLeft.setMaxSpeed(4000);
+        backLeft.setMaxSpeed(4000);
+        backRight.setMaxSpeed(4000);
 
         //Touch
         touchRight = hardwareMap.touchSensor.get("touchRight");
@@ -206,7 +206,7 @@ public class RealAutoRed extends LinearOpMode {
         while (opModeIsActive() && on == true) {
             shoot(500, 1);
             ballDoorDown();
-            sleep(950);
+            sleep(1200);
             shoot(400, 1);
 
             Move(61.5, 1, 45);

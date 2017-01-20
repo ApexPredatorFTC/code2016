@@ -36,7 +36,7 @@ public class RealAutoBlue extends LinearOpMode {
     double encoderCounts;
     Servo flipperRight;
     Servo flipperLeft;
-    Servo boot;
+    Servo ballDoor;
 
     //Create I2C Objects
     public I2cDevice c1;
@@ -145,10 +145,10 @@ public class RealAutoBlue extends LinearOpMode {
         //Servos
         flipperRight = hardwareMap.servo.get("flipperRight");
         flipperLeft = hardwareMap.servo.get("flipperLeft");
-        boot = hardwareMap.servo.get("boot");
+        ballDoor = hardwareMap.servo.get("ballDoor");
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
-        boot.setPosition(0.75);
+        ballDoor.setPosition(1);
 
         //Color Sensor
         float hsvValues[] = {0F, 0F, 0F};
@@ -185,6 +185,10 @@ public class RealAutoBlue extends LinearOpMode {
         //Do Stuff
         if (opModeIsActive()) {
             shoot(500, 1);
+            ballDoorDown();
+            sleep(1200);
+            shoot(400, 1);
+
             Move(72, 1, 135);
             GyroTurn(-185);
             untilButton(0.4);
@@ -717,6 +721,13 @@ public class RealAutoBlue extends LinearOpMode {
 
         }
     }
+    public void ballDoorDown(){
+        ballDoor.setPosition(.56);
+    }
+    public void ballDoorUp(){
+        ballDoor.setPosition(1);
+    }
+
 }
 
 
