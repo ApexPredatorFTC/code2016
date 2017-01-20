@@ -23,7 +23,7 @@ public class TeleOP extends LinearOpMode{
 
     Servo flipperRight;
     Servo flipperLeft;
-    Servo boot;
+
     int mode;
 
 
@@ -37,18 +37,18 @@ public class TeleOP extends LinearOpMode{
 
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         flipperRight = hardwareMap.servo.get("flipperRight");
-        boot = hardwareMap.servo.get("boot");
+
 
         flipperRight.setPosition(0.08);
         flipperLeft.setPosition(0.94);
-        boot.setPosition(0.85);
+
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
-        mode = 1;
+        mode = 2;
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -100,18 +100,20 @@ public class TeleOP extends LinearOpMode{
             if (gamepad1.dpad_left){
                 mode =2;
             }
-            if (gamepad2.dpad_down){
-                boot.setPosition(0.85);
-            }
-            if (gamepad2.dpad_up){
-                boot.setPosition(0.15);
-            }
+
             if (gamepad2.x){
                 shooter.setPower(1);
+            }
+            else if (gamepad2.y){
+                shooter.setPower(0.8);
+            }
+            else if (gamepad2.a){
+                shooter.setPower(-0.8);
             }
             else {
                 shooter.setPower(0);
             }
+
 
 
             float [] joystickVals = new float[] {fr, lft, rt, bk};

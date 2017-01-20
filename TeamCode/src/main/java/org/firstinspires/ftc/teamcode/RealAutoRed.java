@@ -32,7 +32,7 @@ public class RealAutoRed extends LinearOpMode {
 
     Servo flipperRight;
     Servo flipperLeft;
-    Servo boot;
+
 
     /*ColorSensor cSensor1;
     ColorSensor cSensor2;*/
@@ -148,10 +148,10 @@ public class RealAutoRed extends LinearOpMode {
         //Servos
         flipperRight = hardwareMap.servo.get("flipperRight");
         flipperLeft = hardwareMap.servo.get("flipperLeft");
-        boot = hardwareMap.servo.get("boot");
+
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
-        boot.setPosition(0.75);
+
 
         //Color Sensor
         c1 = hardwareMap.i2cDevice.get("cSensor1");
