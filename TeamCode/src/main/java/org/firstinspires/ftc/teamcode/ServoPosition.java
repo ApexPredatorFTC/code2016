@@ -13,9 +13,17 @@ public class ServoPosition extends LinearOpMode{
     Servo flipperRight;
     Servo flipperLeft;
     Servo ballDoor;
+    Servo rightClaw;
+    Servo leftClaw;
+    Servo liftClaw;
+
     double positionLeft;
     double positionRight;
-    double positionBoot;
+
+    double leftSideClaw;
+    double rightSideClaw;
+    double upClaw;
+
 
 
     @Override
@@ -23,6 +31,9 @@ public class ServoPosition extends LinearOpMode{
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         flipperRight = hardwareMap.servo.get("flipperRight");
         ballDoor = hardwareMap.servo.get("ballDoor");
+        rightClaw = hardwareMap.servo.get("rightClaw");
+        leftClaw = hardwareMap.servo.get("leftClaw");
+        liftClaw = hardwareMap.servo.get("liftClaw");
 
         flipperRight.setPosition(0);
         flipperLeft.setPosition(0);
@@ -84,13 +95,60 @@ public class ServoPosition extends LinearOpMode{
 
             }
 
+            if (gamepad2.dpad_down){
+            leftSideClaw = leftSideClaw -0.01;
+                if (leftSideClaw<0){
+                    leftSideClaw = 0;
+                }
+            }
+            else if (gamepad2.dpad_up){
+                leftSideClaw = leftSideClaw +0.01;
+                if (leftSideClaw>1){
+                    leftSideClaw=1;
+                }
+
+            }
+            if (gamepad2.dpad_left) {
+                rightSideClaw = rightSideClaw -0.01;
+                if (rightSideClaw<0) {
+                    rightSideClaw=0;
+                }
+            }
+            else if (gamepad2.dpad_right) {
+                rightSideClaw = rightSideClaw + 0.01;
+                if (rightSideClaw > 1) {
+                    rightSideClaw = 1;
+                }
+
+            }
+            if (gamepad2.x) {
+                upClaw = upClaw -0.01;
+                if (upClaw<0){
+                    upClaw=0;
+                }
+
+
+            }
+            else if (gamepad2.a){
+                upClaw = upClaw +0.01;
+                if (upClaw>1){
+                    upClaw=1;
+                }
+            }
+
             flipperLeft.setPosition(positionLeft);
             flipperRight.setPosition(positionRight);
             ballDoor.setPosition(positionLeft);
+            leftClaw.setPosition(leftSideClaw);
+            rightClaw.setPosition(rightSideClaw);
+            liftClaw.setPosition(upClaw);
+
 
             telemetry.addData("Right Servo", positionRight);
             telemetry.addData("Left Servo", positionLeft);
-            telemetry.addData("Boot", positionBoot);
+            telemetry.addData("Right Claw", rightSideClaw);
+            telemetry.addData("Left Claw", leftSideClaw);
+            telemetry.addData("Lifter", upClaw);
             telemetry.update();
 
             idle();

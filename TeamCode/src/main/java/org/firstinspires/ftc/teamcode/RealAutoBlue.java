@@ -196,7 +196,7 @@ public class RealAutoBlue extends LinearOpMode {
             Move(1.5, 0.3, 180);
             flipperDownBlue();
             findLine(false, 0.18);
-            Move(2.5, 0.5, 0);
+            Move(2.75, 0.5, 0);
             chooseColor(false);
             Move(3, 1, 180);
 
@@ -207,7 +207,7 @@ public class RealAutoBlue extends LinearOpMode {
             flipperDownBlue();
 
             findLine(false, 0.18);
-            Move(2.5, 0.4, 0);
+            Move(3, 0.4, 0);
 
             chooseColor(false);
             Move(3, 0.8, 180);
