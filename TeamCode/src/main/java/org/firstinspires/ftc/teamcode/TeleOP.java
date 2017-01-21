@@ -31,7 +31,7 @@ public class TeleOP extends LinearOpMode{
 
     int mode;
 
-    double lifterPosition ;
+    double lifterPosition =.85;
 
     public void runOpMode() throws InterruptedException {
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
@@ -52,6 +52,8 @@ public class TeleOP extends LinearOpMode{
         flipperRight.setPosition(0.08);
         flipperLeft.setPosition(0.94);
         liftClaw.setPosition(0.85);
+        rightClaw.setPosition(1);
+        leftClaw.setPosition(.43);
 
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -87,8 +89,12 @@ public class TeleOP extends LinearOpMode{
             float z = zscale*(float)Math.pow(z_raw, 3.0) + (1-zscale)*z_raw;
             double increment = gamepad2.right_stick_y *.05;
             lifterPosition = lifterPosition + increment;
-
-
+            if (lifterPosition >1){
+                lifterPosition =1;
+            }
+            else if (lifterPosition <0){
+                lifterPosition = 0;
+            }
 
             float fr = 0;
             float bk = 0;
@@ -116,10 +122,10 @@ public class TeleOP extends LinearOpMode{
                 mode =2;
             }
 
-            if (gamepad2.x){
+            if (gamepad2.y){
                 shooter.setPower(1);
             }
-            else if (gamepad2.y){
+            else if (gamepad2.x){
                 shooter.setPower(0.8);
             }
             else if (gamepad2.a){
@@ -169,6 +175,7 @@ public class TeleOP extends LinearOpMode{
             backLeft.setPower(lft);
             frontRight.setPower(rt);
             backRight.setPower(bk);
+            liftClaw.setPosition(lifterPosition);
 
 
 
