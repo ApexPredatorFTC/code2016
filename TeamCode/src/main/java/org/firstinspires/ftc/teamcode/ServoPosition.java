@@ -105,7 +105,7 @@ public class ServoPosition extends LinearOpMode{
                 leftSideClaw = leftSideClaw +0.01;
                 if (leftSideClaw>1){
                     leftSideClaw=1;
-                }
+                  }
 
             }
             if (gamepad2.dpad_left) {
@@ -170,4 +170,19 @@ public class ServoPosition extends LinearOpMode{
         Downward Position
         Right: 1.0
         Left: 0.0
+
+        Claw:
+         Down: .21
+         Up: 1
+
+        Right Claw:
+         Out (collect): .81
+         In (holding): 1
+         Wider out: .73
+
+        Left Claw:
+         Out: .64
+         In: .43
+         Wider out: .21
+
  */

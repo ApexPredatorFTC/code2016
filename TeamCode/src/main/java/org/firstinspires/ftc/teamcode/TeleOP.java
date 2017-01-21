@@ -20,15 +20,18 @@ public class TeleOP extends LinearOpMode{
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor shooter;
-    DcMotor capper;
+
 
     Servo flipperRight;
     Servo flipperLeft;
     Servo ballDoor;
+    Servo rightClaw;
+    Servo leftClaw;
+    Servo liftClaw;
 
     int mode;
 
-
+    double lifterPosition ;
 
     public void runOpMode() throws InterruptedException {
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
@@ -36,15 +39,19 @@ public class TeleOP extends LinearOpMode{
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backRight = hardwareMap.dcMotor.get("backRight");
         shooter = hardwareMap.dcMotor.get("shooter");
-        capper = hardwareMap.dcMotor.get("capper");
+
 
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         flipperRight = hardwareMap.servo.get("flipperRight");
         ballDoor = hardwareMap.servo.get("ballDoor");
+        rightClaw = hardwareMap.servo.get("rightClaw");
+        leftClaw = hardwareMap.servo.get("leftClaw");
+        liftClaw = hardwareMap.servo.get("liftClaw");
 
 
         flipperRight.setPosition(0.08);
         flipperLeft.setPosition(0.94);
+        liftClaw.setPosition(0.85);
 
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -78,6 +85,10 @@ public class TeleOP extends LinearOpMode{
             float x = xscale*(float)Math.pow(x_raw, 3.0) + (1-xscale)*x_raw;
             float y = yscale*(float)Math.pow(y_raw, 3.0) + (1-yscale)*y_raw;
             float z = zscale*(float)Math.pow(z_raw, 3.0) + (1-zscale)*z_raw;
+            double increment = gamepad2.right_stick_y *.05;
+            lifterPosition = lifterPosition + increment;
+
+
 
             float fr = 0;
             float bk = 0;
@@ -119,14 +130,21 @@ public class TeleOP extends LinearOpMode{
             }
 
             if (gamepad2.dpad_up){
-                capper.setPower(1);
+                rightClaw.setPosition(.81);
+                leftClaw.setPosition(.62);
             }
             else if (gamepad2.dpad_down){
-                capper.setPower(-1);
+                rightClaw.setPosition(1);
+                leftClaw.setPosition(.43);
             }
-            else{
-                capper.setPower(0);
-            }
+
+
+
+
+
+
+
+
 
 
 
@@ -151,6 +169,8 @@ public class TeleOP extends LinearOpMode{
             backLeft.setPower(lft);
             frontRight.setPower(rt);
             backRight.setPower(bk);
+
+
 
             idle();
         }
