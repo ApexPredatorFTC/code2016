@@ -51,9 +51,10 @@ public class TeleOP extends LinearOpMode{
 
         flipperRight.setPosition(0.08);
         flipperLeft.setPosition(0.94);
-        liftClaw.setPosition(0.85);
+        liftClaw.setPosition(0.81);
         rightClaw.setPosition(1);
         leftClaw.setPosition(.43);
+        ballDoor.setPosition(.4);
 
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -87,7 +88,11 @@ public class TeleOP extends LinearOpMode{
             float x = xscale*(float)Math.pow(x_raw, 3.0) + (1-xscale)*x_raw;
             float y = yscale*(float)Math.pow(y_raw, 3.0) + (1-yscale)*y_raw;
             float z = zscale*(float)Math.pow(z_raw, 3.0) + (1-zscale)*z_raw;
-            double increment = gamepad2.right_stick_y *.05;
+
+            double increment = -gamepad2.right_stick_y *.002;
+            if (gamepad2.left_trigger> 0){
+                increment = -gamepad2.right_stick_y * .008;
+            }
             lifterPosition = lifterPosition + increment;
             if (lifterPosition >1){
                 lifterPosition =1;
@@ -135,12 +140,12 @@ public class TeleOP extends LinearOpMode{
                 shooter .setPower(0);
             }
 
-            if (gamepad2.dpad_up){
-                rightClaw.setPosition(.81);
+            if (gamepad2.dpad_down){
+                rightClaw.setPosition(.53);
                 leftClaw.setPosition(.62);
             }
-            else if (gamepad2.dpad_down){
-                rightClaw.setPosition(1);
+            else if (gamepad2.dpad_up){
+                rightClaw.setPosition(.71);
                 leftClaw.setPosition(.43);
             }
 

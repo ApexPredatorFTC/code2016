@@ -37,6 +37,9 @@ public class RealAutoBlue extends LinearOpMode {
     Servo flipperRight;
     Servo flipperLeft;
     Servo ballDoor;
+    Servo rightClaw;
+    Servo leftClaw;
+    Servo liftClaw;
 
     //Create I2C Objects
     public I2cDevice c1;
@@ -146,9 +149,16 @@ public class RealAutoBlue extends LinearOpMode {
         flipperRight = hardwareMap.servo.get("flipperRight");
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         ballDoor = hardwareMap.servo.get("ballDoor");
+        rightClaw = hardwareMap.servo.get("rightClaw");
+        leftClaw = hardwareMap.servo.get("leftClaw");
+        liftClaw = hardwareMap.servo.get("liftClaw");
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
-        ballDoor.setPosition(1);
+        ballDoor.setPosition(.9);
+        rightClaw.setPosition(.71);
+        leftClaw.setPosition(1);
+        liftClaw.setPosition(1);
+
 
         //Color Sensor
         float hsvValues[] = {0F, 0F, 0F};
@@ -184,6 +194,7 @@ public class RealAutoBlue extends LinearOpMode {
         boolean on = true;
         //Do Stuff
         while (opModeIsActive() && on == true) {
+            clawStart();
             shoot(500, 1);
             ballDoorDown();
             sleep(1400);
@@ -195,23 +206,25 @@ public class RealAutoBlue extends LinearOpMode {
             squareWall(0.4);
             Move(1.5, 0.3, 180);
             flipperDownBlue();
-            findLine(false, 0.18);
+            findLine(false, 0.24);
             Move(2.75, 0.5, 0);
             chooseColor(false);
             Move(3, 1, 180);
 
-            Move(44, 1, 270);
+            Move(41, 1, 270);
             untilButton(0.4);
             squareWall(0.4);
             Move(1.5, 0.3, 180);
             flipperDownBlue();
 
-            findLine(false, 0.18);
+            findLine(false, 0.24);
             Move(3, 0.4, 0);
 
             chooseColor(false);
             Move(3, 0.8, 180);
-            Move(60, 1, 132);
+            Move(66, 1, 132);
+            GyroTurn(90);
+            Move(4, 1, 270);
             GyroTurn(90);
             on = false;
             //Move(70, 1, 135);
@@ -724,10 +737,14 @@ public class RealAutoBlue extends LinearOpMode {
         }
     }
     public void ballDoorDown(){
-        ballDoor.setPosition(.56);
+        ballDoor.setPosition(.40);
     }
     public void ballDoorUp(){
-        ballDoor.setPosition(1);
+        ballDoor.setPosition(.9);
+    }
+
+    public void clawStart(){
+        liftClaw.setPosition(0.2);
     }
 
 }

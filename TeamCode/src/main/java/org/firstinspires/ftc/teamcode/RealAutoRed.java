@@ -33,6 +33,9 @@ public class RealAutoRed extends LinearOpMode {
     Servo flipperRight;
     Servo flipperLeft;
     Servo ballDoor;
+    Servo rightClaw;
+    Servo leftClaw;
+    Servo liftClaw;
 
 
     /*ColorSensor cSensor1;
@@ -94,6 +97,9 @@ public class RealAutoRed extends LinearOpMode {
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backRight = hardwareMap.dcMotor.get("backRight");
         shooter = hardwareMap.dcMotor.get("shooter");
+        rightClaw = hardwareMap.servo.get("rightClaw");
+        leftClaw = hardwareMap.servo.get("leftClaw");
+        liftClaw = hardwareMap.servo.get("liftClaw");
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -153,7 +159,10 @@ public class RealAutoRed extends LinearOpMode {
 
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
-        ballDoor.setPosition(1);
+        ballDoor.setPosition(.9);
+        rightClaw.setPosition(.71);
+        leftClaw.setPosition(1);
+        liftClaw.setPosition(1);
 
 
         //Color Sensor
@@ -204,12 +213,13 @@ public class RealAutoRed extends LinearOpMode {
         boolean on = true;
         //Do Stuff
         while (opModeIsActive() && on == true) {
+            clawStart();
             shoot(500, 1);
             ballDoorDown();
             sleep(1400);
             shoot(500 , 1);
 
-            Move(61.5, 1, 45);
+            Move(62.5, 1, 45);
             untilButton(0.35);
             squareWall(0.35);
             Move(1.5, 0.3, 180);
@@ -217,7 +227,7 @@ public class RealAutoRed extends LinearOpMode {
             //Move(3, 0.4, 180);
             //flipperIn();
             //Move(3.1, 0.4, 0);
-            findLine(true, 0.18);
+            findLine(true, 0.24);
             Move(2.5, 0.25, 0);
             chooseColor(true);
             //Move(36, 0.8, 108);
@@ -232,14 +242,16 @@ public class RealAutoRed extends LinearOpMode {
             flipperDownRed();
 
             //Move(3.15, 0.7, 0);
-            findLine(true, 0.18);
+            findLine(true, 0.24);
             //lMove(2, 0.3, 0);
             Move(2.5, 0.4, 0);
             chooseColor(true);
             Move(3, 0.8, 180);
             flipperIn();
             Move(60,1,218);
-            GyroTurn(90);
+            GyroTurn(-90);
+            Move(2.5, 1, 90);
+            GyroTurn(-90);
             //Move(70, 1, 225)
             on = false;
         }
@@ -746,10 +758,13 @@ public class RealAutoRed extends LinearOpMode {
         }
     }
     public void ballDoorDown(){
-        ballDoor.setPosition(.56);
+        ballDoor.setPosition(.4);
     }
     public void ballDoorUp(){
-        ballDoor.setPosition(1);
+        ballDoor.setPosition(.9);
+    }
+    public void clawStart(){
+        liftClaw.setPosition(0.2);
     }
 }
    /* public void lineUpLine(boolean color){
