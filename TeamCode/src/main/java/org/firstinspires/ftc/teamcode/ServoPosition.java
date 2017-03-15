@@ -15,7 +15,7 @@ public class ServoPosition extends LinearOpMode{
     Servo ballDoor;
     Servo rightClaw;
     Servo leftClaw;
-    Servo liftClaw;
+    //Servo liftClaw;
 
     double positionLeft;
     double positionRight;
@@ -33,7 +33,7 @@ public class ServoPosition extends LinearOpMode{
         ballDoor = hardwareMap.servo.get("ballDoor");
         rightClaw = hardwareMap.servo.get("rightClaw");
         leftClaw = hardwareMap.servo.get("leftClaw");
-        liftClaw = hardwareMap.servo.get("liftClaw");
+        //liftClaw = hardwareMap.servo.get("liftClaw");
 
         flipperRight.setPosition(0);
         flipperLeft.setPosition(0);
@@ -141,14 +141,15 @@ public class ServoPosition extends LinearOpMode{
             ballDoor.setPosition(positionLeft);
             leftClaw.setPosition(leftSideClaw);
             rightClaw.setPosition(rightSideClaw);
-            liftClaw.setPosition(upClaw);
+            //
+            // liftClaw.setPosition(upClaw);
 
 
             telemetry.addData("Right Servo", positionRight);
             telemetry.addData("Left Servo", positionLeft);
             telemetry.addData("Right Claw", rightSideClaw);
             telemetry.addData("Left Claw", leftSideClaw);
-            telemetry.addData("Lifter", upClaw);
+            //0telemetry.addData("Lifter", upClaw);
             telemetry.update();
 
             idle();
@@ -176,13 +177,13 @@ public class ServoPosition extends LinearOpMode{
          Up: 1
 
         Right Claw:
-         Out (collect): .81
-         In (holding): 1
+         Out (collect): .12
+         In (holding): .46
          Wider out: .73
 
         Left Claw:
-         Out: .64
-         In: .43
+         Out: .79
+         In: .37
          Wider out: .21
 
  */

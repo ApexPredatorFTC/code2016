@@ -29,13 +29,14 @@ public class RealAutoRed extends LinearOpMode {
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor shooter;
+    DcMotor liftClaw;
 
     Servo flipperRight;
     Servo flipperLeft;
     Servo ballDoor;
     Servo rightClaw;
     Servo leftClaw;
-    Servo liftClaw;
+
 
 
     /*ColorSensor cSensor1;
@@ -99,7 +100,7 @@ public class RealAutoRed extends LinearOpMode {
         shooter = hardwareMap.dcMotor.get("shooter");
         rightClaw = hardwareMap.servo.get("rightClaw");
         leftClaw = hardwareMap.servo.get("leftClaw");
-        liftClaw = hardwareMap.servo.get("liftClaw");
+        liftClaw = hardwareMap.dcMotor.get("liftClaw");
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -160,9 +161,9 @@ public class RealAutoRed extends LinearOpMode {
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
         ballDoor.setPosition(.9);
-        rightClaw.setPosition(.71);
-        leftClaw.setPosition(1);
-        liftClaw.setPosition(1);
+        rightClaw.setPosition(.12);
+        leftClaw.setPosition(.89);
+
 
 
         //Color Sensor
@@ -228,10 +229,10 @@ public class RealAutoRed extends LinearOpMode {
             //flipperIn();
             //Move(3.1, 0.4, 0);
             findLine(true, 0.24);
-            Move(2.5, 0.25, 0);
+            Move(3.3, 0.25, 0);
             chooseColor(true);
             //Move(36, 0.8, 108);
-            Move(3, 0.4, 180);
+            Move(4, 0.4, 180);
 
             Move(40, 1, 90);
             untilButton(0.35);
@@ -244,7 +245,7 @@ public class RealAutoRed extends LinearOpMode {
             //Move(3.15, 0.7, 0);
             findLine(true, 0.24);
             //lMove(2, 0.3, 0);
-            Move(2.5, 0.4, 0);
+            Move(3.1, 0.4, 0);
             chooseColor(true);
             Move(3, 0.8, 180);
             flipperIn();
@@ -647,30 +648,30 @@ public class RealAutoRed extends LinearOpMode {
                 telemetry.addData("c2 Red/Blue", (c2Cache[6] & 0xff) + " " + (c2Cache[8] & 0xff));
                 telemetry.update();
                 if (color) {
-                    if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[6] & 0xff) != 255)) {
+                    if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[8] & 0xff) == 255)) {
                         telemetry.addLine("a");
                         telemetry.update();
-                        Move(3.25, 0.25, 90);
+                        Move(3, 0.25, 90);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("b");
                         telemetry.update();
                         on = true;
-                    } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[6] & 0xff) != 255) {
+                    } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
                         telemetry.addLine("c");
                         telemetry.update();
-                        Move(3.25, 0.25, 270);
+                        Move(3, 0.25, 270);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("d");
                         telemetry.update();
                         on = true;
                     }
                 } else {
-                    if ((c2Cache[8] & 0xff) == 255 && (c1Cache[8] & 0xff) != 255) {
-                        Move(3.25, 0.42, 270);
+                    if ((c2Cache[8] & 0xff) == 255 && (c1Cache[6] & 0xff) == 255) {
+                        Move(3, 0.42, 270);
                         Move(0.5, 0.25, 0);
                         on = true;
-                    } else if ((c2Cache[8] & 0xff) != 255 && (c1Cache[8] & 0xff) == 255) {
-                        Move(3.25, 0.42, 90);
+                    } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
+                        Move(3, 0.42, 90);
                         Move(0.5, 0.25, 0);
                         on = true;
                     }
@@ -682,7 +683,7 @@ public class RealAutoRed extends LinearOpMode {
 
     public void findLine(boolean direction, double speed) {
         if (opModeIsActive()) {
-            double colorWhite = 180;
+            double colorWhite = 135;
             double rightleft;
             if (direction) {
                 rightleft = 90;
@@ -764,7 +765,7 @@ public class RealAutoRed extends LinearOpMode {
         ballDoor.setPosition(.9);
     }
     public void clawStart(){
-        liftClaw.setPosition(0.2);
+
     }
 }
    /* public void lineUpLine(boolean color){
