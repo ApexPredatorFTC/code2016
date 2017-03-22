@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
@@ -97,7 +96,7 @@ public class RealAutoBlue extends LinearOpMode {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
-        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooter.setDirection(DcMotor.Direction.FORWARD);
 
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -206,6 +205,7 @@ public class RealAutoBlue extends LinearOpMode {
             squareWall(0.4);
             Move(1.5, 0.3, 180);
             flipperDownBlue();
+
             findLine(false, 0.24);
             Move(3, 0.5, 0);
             chooseColor(false);
@@ -630,7 +630,7 @@ public class RealAutoBlue extends LinearOpMode {
                     if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[8] & 0xff) == 255)) {
                         telemetry.addLine("a");
                         telemetry.update();
-                        Move(3, 0.25, 90);
+                        Move(4, 0.25, 90);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("b");
                         telemetry.update();
@@ -638,7 +638,7 @@ public class RealAutoBlue extends LinearOpMode {
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
                         telemetry.addLine("c");
                         telemetry.update();
-                        Move(3, 0.25, 270);
+                        Move(4, 0.25, 270);
                         Move(0.5, 0.25, 0);
                         telemetry.addLine("d");
                         telemetry.update();
@@ -646,11 +646,11 @@ public class RealAutoBlue extends LinearOpMode {
                     }
                 } else {
                     if ((c2Cache[8] & 0xff) == 255 && (c1Cache[6] & 0xff) == 255) {
-                        Move(3, 0.42, 270);
+                        Move(4, 0.42, 270);
                         Move(0.5, 0.25, 0);
                         on = true;
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
-                        Move(3, 0.42, 90);
+                        Move(4, 0.42, 90);
                         Move(0.5, 0.25, 0);
                         on = true;
                     }
@@ -661,7 +661,7 @@ public class RealAutoBlue extends LinearOpMode {
     }
     public void findLine(boolean direction, double speed) {
         if (opModeIsActive()) {
-            double colorWhite = 120;
+            double colorWhite = 100;
             double rightleft;
             if (direction) {
                 rightleft = 90;

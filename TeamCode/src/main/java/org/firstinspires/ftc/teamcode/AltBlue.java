@@ -21,8 +21,8 @@ import com.qualcomm.robotcore.util.Range;
  * Created by Admin on 11/27/2016.
  */
 
-@Autonomous(name = "RealAutoRed", group = "Sensor")
-public class RealAutoRed extends LinearOpMode {
+@Autonomous(name = "AltBlue", group = "Sensor")
+public class AltBlue extends LinearOpMode {
     DcMotor frontLeft;
     DcMotor backLeft;
     DcMotor frontRight;
@@ -219,40 +219,31 @@ public class RealAutoRed extends LinearOpMode {
             sleep(1400);
             shoot(500 , 1);
 
-            Move(63, 1, 47);
-            untilButton(0.35);
-            squareWall(0.35);
+            Move(97 ,1 , 110);
+            GyroTurn(180);
+            untilButton(.4);
+            squareWall(.4);
             Move(1.5, 0.3, 180);
+            flipperDownBlue();
+
+            findLine(false, .24);
+            Move(4, 0.5, 0);
+            chooseColor(false);
+            Move(5, 1, 180);
+
+            Move(3, 1, 180);
+            Move(41, 1, 90);
+
+            untilButton(.4);
+            squareWall(.4);
             flipperDownRed();
-            //Move(3, 0.4, 180);
-            //flipperIn();
-            //Move(3.1, 0.4, 0);
-            findLine(true, 0.24);
-            Move(3.3, 0.25, 0);
-            chooseColor(true);
-            //Move(36, 0.8, 108);
-            Move(6.5, 0.4, 180);
+            findLine(true, .24);
+            Move(3, 0.5, 0);
+            chooseColor(false);
+            Move(4, 1, 180);
+            Move(30, 1 , 180);
+            GyroTurn(45);
 
-            Move(40, 1, 90);
-            untilButton(0.35);
-            squareWall(0.35);
-
-            //Move(3, 0.7, 180);
-            Move(1.5, 0.3, 180);
-            flipperDownRed();
-
-            //Move(3.15, 0.7, 0);
-            findLine(true, 0.24);
-            //lMove(2, 0.3, 0);
-            Move(3, 0.4, 0);
-            chooseColor(true);
-            Move(3, 0.8, 180);
-            //flipperIn();
-            Move(60,1,218);
-            GyroTurn(-45);
-            Move(7, 1, 135);
-
-            //Move(70, 1, 225)
             on = false;
         }
     }

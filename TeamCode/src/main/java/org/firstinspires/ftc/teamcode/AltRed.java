@@ -1,49 +1,68 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * Created by Admin on 11/27/2016.
+ * Created by Admin on 3/15/2017.
  */
-
-@Autonomous(name = "RealAutoRed", group = "Sensor")
-public class RealAutoRed extends LinearOpMode {
+@Autonomous(name = "AltRed", group = "Sensor")
+public class AltRed extends LinearOpMode{
     DcMotor frontLeft;
     DcMotor backLeft;
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor shooter;
-    DcMotor liftClaw;
 
+    double frontLeftEncoder;
+    double frontRightEncoder;
+    double backRightEncoder;
+    double backLeftEncoder;
+    double encoderCounts;
     Servo flipperRight;
     Servo flipperLeft;
     Servo ballDoor;
     Servo rightClaw;
     Servo leftClaw;
+    DcMotor liftClaw;
 
+    //Create I2C Objects
+    public I2cDevice c1;
+    public I2cDeviceSynch c1Reader;
+    public I2cDevice c2;
+    public I2cDeviceSynch c2Reader;
+    public I2cDevice c3;
+    public I2cDeviceSynch c3Reader;
 
+    //I2C Result arrays
+    byte[] c1Cache;
+    byte[] c2Cache;
+    byte[] c3Cache;
 
-    /*ColorSensor cSensor1;
-    ColorSensor cSensor2;*/
 
     TouchSensor touchRight;
     TouchSensor touchLeft;
     ModernRoboticsI2cGyro gyro = null;
+
+    public static final I2cAddr c1Addr = I2cAddr.create7bit(0x1E);
+    public static final I2cAddr c2Addr = I2cAddr.create7bit(0x26);
+    public static final I2cAddr c3Addr = I2cAddr.create8bit(0x50);
+    public static final int c1StartReg = 0x04;
+    public static final int c1ReadLength = 26;
+    public static final int c1CmdReg = 0x03;
+
+    public static final int c1PassiveCmd = 0x01;
+    public static final int c1ActiveCmd = 0x00;
+
 
     static final double COUNTS_PER_MOTOR_REV = 1100;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
@@ -57,49 +76,16 @@ public class RealAutoRed extends LinearOpMode {
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.017;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.10;     // Larger is more responsive, but also less stable
-    //Color Sensor
-
-    public static final I2cAddr c1Addr = I2cAddr.create7bit(0x1E);
-    public static final I2cAddr c2Addr = I2cAddr.create7bit(0x26);
-    public static final I2cAddr c3Addr = I2cAddr.create8bit(0x50);
-
-    public static final int c1StartReg = 0x04;
-    public static final int c1ReadLength = 26;
-    public static final int c1CmdReg = 0x03;
-
-    public static final int c1PassiveCmd = 0x01;
-    public static final int c1ActiveCmd = 0x00;
-
-    //Elapsed Timer Object
-    private ElapsedTime runtime = new ElapsedTime();
-
-    //Create I2C Objects
-    public I2cDevice c1;
-    public I2cDeviceSynch c1Reader;
-    public I2cDevice c2;
-    public I2cDeviceSynch c2Reader;
-    public I2cDevice c3;
-    public I2cDeviceSynch c3Reader;
-
-
-    //I2C Result arrays
-    byte[] c1Cache;
-    byte[] c2Cache;
-    byte[] c3Cache;
-
 
     @Override
 
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         //Motors
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backRight = hardwareMap.dcMotor.get("backRight");
         shooter = hardwareMap.dcMotor.get("shooter");
-        rightClaw = hardwareMap.servo.get("rightClaw");
-        leftClaw = hardwareMap.servo.get("leftClaw");
-        liftClaw = hardwareMap.dcMotor.get("liftClaw");
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -145,7 +131,8 @@ public class RealAutoRed extends LinearOpMode {
 
         // make sure the gyro is calibrated before continuing
         while (gyro.isCalibrating()) {
-            sleep(50);
+            Thread.sleep(50);
+            idle();
         }
         telemetry.addData(">", "Robot Ready.");    //
         telemetry.update();
@@ -156,7 +143,9 @@ public class RealAutoRed extends LinearOpMode {
         flipperRight = hardwareMap.servo.get("flipperRight");
         flipperLeft = hardwareMap.servo.get("flipperLeft");
         ballDoor = hardwareMap.servo.get("ballDoor");
-
+        rightClaw = hardwareMap.servo.get("rightClaw");
+        leftClaw = hardwareMap.servo.get("leftClaw");
+        liftClaw = hardwareMap.dcMotor.get("liftClaw");
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
         ballDoor.setPosition(.9);
@@ -166,19 +155,22 @@ public class RealAutoRed extends LinearOpMode {
 
 
         //Color Sensor
+        float hsvValues[] = {0F, 0F, 0F};
+        float hsvValues1[] = {0F, 0F, 0F};
+        final float values[] = hsvValues;
+        final float values1[] = hsvValues1;
+
+        //Color Sensor
         c1 = hardwareMap.i2cDevice.get("cSensor1");
         c2 = hardwareMap.i2cDevice.get("cSensor2");
         c3 = hardwareMap.i2cDevice.get("cSensor3");
-
         c1Reader = new I2cDeviceSynchImpl(c1, c1Addr, false);
         c2Reader = new I2cDeviceSynchImpl(c2, c2Addr, false);
         c3Reader = new I2cDeviceSynchImpl(c3, c3Addr, false);
 
-
         c1Reader.engage();
         c2Reader.engage();
         c3Reader.engage();
-
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -187,74 +179,54 @@ public class RealAutoRed extends LinearOpMode {
         c1Reader.write8(c1CmdReg, c1PassiveCmd);
         c2Reader.write8(c1CmdReg, c1PassiveCmd);
         c3Reader.write8(c1CmdReg, c1ActiveCmd);
-        //Wait for the user to press play and reset the timer
-
-
-
-        /*float hsvValues[] = {0F, 0F, 0F};
-        float hsvValues1[] = {0F, 0F, 0F};
-        final float values[] = hsvValues;
-        final float values1[] = hsvValues1;
-
-        cSensor1 = hardwareMap.colorSensor.get("cSensor1");
-        cSensor2 = hardwareMap.colorSensor.get("cSensor2");
-
-        cSensor1.setI2cAddress(I2cAddr.create7bit(0x1E));
-        cSensor2.setI2cAddress(I2cAddr.create7bit(0x26));
-
-        Color.RGBToHSV(cSensor1.red() * 8, cSensor1.green() * 8, cSensor1.blue() * 8, hsvValues);
-        Color.RGBToHSV(cSensor2.red() * 8, cSensor2.green() * 8, cSensor2.blue() * 8, hsvValues1);
-*/
         while (!isStarted()) {
             telemetry.addData(">", "Robot Heading = %d", gyro.getIntegratedZValue());
             telemetry.update();
+            idle();
         }
         gyro.resetZAxisIntegrator();
         boolean on = true;
         //Do Stuff
         while (opModeIsActive() && on == true) {
-            clawStart();
+
             shoot(500, 1);
             ballDoorDown();
             sleep(1400);
-            shoot(500 , 1);
+            shoot(500, 1);
 
-            Move(63, 1, 47);
-            untilButton(0.35);
-            squareWall(0.35);
+            Move(97, 1, 70);
+
+            untilButton(0.4);
+            squareWall(0.4);
             Move(1.5, 0.3, 180);
             flipperDownRed();
-            //Move(3, 0.4, 180);
-            //flipperIn();
-            //Move(3.1, 0.4, 0);
-            findLine(true, 0.24);
-            Move(3.3, 0.25, 0);
+
+            findLine(true, .24);
+            Move(3, 1, 0);
             chooseColor(true);
-            //Move(36, 0.8, 108);
-            Move(6.5, 0.4, 180);
+            Move(6, 1, 180);
 
-            Move(40, 1, 90);
-            untilButton(0.35);
-            squareWall(0.35);
+            Move(43, 1, 270);
 
-            //Move(3, 0.7, 180);
-            Move(1.5, 0.3, 180);
-            flipperDownRed();
+            untilButton(0.4);
+            squareWall(0.4);
+            Move(1.5, 0.7, 180);
+            flipperDown();
 
-            //Move(3.15, 0.7, 0);
-            findLine(true, 0.24);
-            //lMove(2, 0.3, 0);
-            Move(3, 0.4, 0);
+            findLine(false, .24);
+
+            Move(3.1, 0.4, 0);
             chooseColor(true);
             Move(3, 0.8, 180);
-            //flipperIn();
-            Move(60,1,218);
-            GyroTurn(-45);
-            Move(7, 1, 135);
+            flipperIn();
 
-            //Move(70, 1, 225)
+            Move(34.5, 1, 180);
+            GyroTurn(-30);
+            Move(12, 1, 135);
             on = false;
+            //Move(70, 1, 135);
         }
+
     }
 
     public double getError(double targetAngle) {
@@ -272,7 +244,7 @@ public class RealAutoRed extends LinearOpMode {
         return Range.clip(error * PCoeff, -1, 1);
     }
 
-    public void Move(double distance, double speed, double direction) {
+    public void Move(double distance, double speed, double direction) throws InterruptedException {
         if (opModeIsActive()) {
             direction = direction * Math.PI / 180;
 
@@ -334,23 +306,24 @@ public class RealAutoRed extends LinearOpMode {
                 telemetry.addData("Speed", "%5.2f:%5.2f:%5.2f:%5.2f", frontLeftSpeed, frontRightSpeed, backLeftSpeed, backRightSpeed);
                 telemetry.update();
 
+                // Allow time for other processes to run.
+                idle();
             }
-            // Turn off RUN_TO_POSITION
-            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
             // Stop all motion;
             frontRight.setPower(0);
             backLeft.setPower(0);
             frontLeft.setPower(0);
             backRight.setPower(0);
 
+            // Turn off RUN_TO_POSITION
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
-    public void GyroTurn(double degrees) {
+    public void GyroTurn(double degrees) throws InterruptedException {
         if (opModeIsActive()) {
 
             gyro.resetZAxisIntegrator();
@@ -398,6 +371,7 @@ public class RealAutoRed extends LinearOpMode {
                     backLeft.setPower(-backLeftSpeed);
                     backRight.setPower(-backRightSpeed);
                 }
+                idle();
             }
             frontRight.setPower(0);
             backLeft.setPower(0);
@@ -406,13 +380,14 @@ public class RealAutoRed extends LinearOpMode {
         }
     }
 
-    public void untilButton(double speed) {
+    public void untilButton(double speed) throws InterruptedException {
         if (opModeIsActive()) {
             double direction = 0;
 
             flipperRight.setPosition(0.624);
-            flipperLeft.setPosition(.38);
+            flipperLeft.setPosition(0.375);
             sleep(200);
+
             gyro.resetZAxisIntegrator();
 
             frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -453,6 +428,8 @@ public class RealAutoRed extends LinearOpMode {
                 telemetry.addData("Speed", "%5.2f:%5.2f:%5.2f:%5.2f", frontLeftSpeed, frontRightSpeed, backLeftSpeed, backRightSpeed);
                 telemetry.update();
 
+                // Allow time for other processes to run.
+                idle();
             }
             // Stop all motion;
             frontRight.setPower(0);
@@ -468,7 +445,7 @@ public class RealAutoRed extends LinearOpMode {
         }
     }
 
-    public void squareWall(double speed) {
+    public void squareWall(double speed) throws InterruptedException {
         if (opModeIsActive()) {
             frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -488,6 +465,7 @@ public class RealAutoRed extends LinearOpMode {
                 if (touchRight.isPressed() && touchLeft.isPressed()) {
                     square = true;
                 }
+                idle();
             }
             frontRight.setPower(0);
             backLeft.setPower(0);
@@ -497,17 +475,17 @@ public class RealAutoRed extends LinearOpMode {
     }
 
     public void flipperOut() {
-        flipperRight.setPosition(0.59);
+        flipperRight.setPosition(0.62);
         flipperLeft.setPosition(.38);
     }
 
-    public void flipperDownBlue() {
+    public void flipperDownBlue() throws InterruptedException {
         flipperRight.setPosition(0);
         flipperLeft.setPosition(0);
         sleep(400);
     }
 
-    public void flipperDownRed() {
+    public void flipperDownRed() throws InterruptedException {
         flipperLeft.setPosition(1);
         flipperRight.setPosition(1);
         sleep(400);
@@ -516,6 +494,11 @@ public class RealAutoRed extends LinearOpMode {
     public void flipperIn() {
         flipperRight.setPosition(0);
         flipperLeft.setPosition(1);
+    }
+
+    public void flipperDown() {
+        flipperRight.setPosition(0);
+        flipperLeft.setPosition(0);
     }
 
     public void findBeacon(boolean direction, double speed) {
@@ -564,13 +547,12 @@ public class RealAutoRed extends LinearOpMode {
                 leftBlue = (c2Cache[14] & 0xff);
                 */
 
-                rightRed = (c1Cache[6] & 0xff);
+                rightRed =(c1Cache[6] & 0xff);
                 leftRed = (c2Cache[6] & 0xff);
                 rightBlue = (c1Cache[8] & 0xff);
                 leftBlue = (c2Cache[8] & 0xff);
 
                 // adjust relative speed based on heading error.
-
                 double error = getError(0);
                 double steer = getSteer(error, P_DRIVE_COEFF);
 
@@ -620,7 +602,7 @@ public class RealAutoRed extends LinearOpMode {
 
     }
 
-    public void shoot(long time, double power) {
+    public void shoot(long time, double power) throws InterruptedException {
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setPower(power);
@@ -628,7 +610,7 @@ public class RealAutoRed extends LinearOpMode {
         shooter.setPower(0);
     }
 
-    public void chooseColor(boolean color) {
+    public void chooseColor(boolean color) throws InterruptedException {
         if (opModeIsActive()) {
             boolean on = false;
             while (opModeIsActive() && (on == false)) {
@@ -650,39 +632,42 @@ public class RealAutoRed extends LinearOpMode {
                     if ((c1Cache[6] & 0xff) == 255 && ((c2Cache[8] & 0xff) == 255)) {
                         telemetry.addLine("a");
                         telemetry.update();
-                        Move(4, 0.25, 90);
-                        Move(0.5, 0.25, 0);
+                        Move(0.25, 0.25, 0);
+                        Move(4.4, 0.25, 90);
+
                         telemetry.addLine("b");
                         telemetry.update();
                         on = true;
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
                         telemetry.addLine("c");
                         telemetry.update();
-                        Move(4, 0.25, 270);
-                        Move(0.5, 0.25, 0);
+                        Move(0.25, 0.25, 0);
+                        Move(4.4, 0.25, 270);
+
                         telemetry.addLine("d");
                         telemetry.update();
                         on = true;
                     }
                 } else {
                     if ((c2Cache[8] & 0xff) == 255 && (c1Cache[6] & 0xff) == 255) {
-                        Move(4, 0.42, 270);
-                        Move(0.5, 0.25, 0);
+                        Move(0.25, 0.25, 0);
+                        Move(4.4, 0.42, 270);
+
                         on = true;
                     } else if ((c2Cache[6] & 0xff) == 255 && (c1Cache[8] & 0xff) == 255) {
-                        Move(4, 0.42, 90);
-                        Move(0.5, 0.25, 0);
+                        Move(0.25, 0.25, 0);
+                        Move(4.4 , 0.42, 90);
+
                         on = true;
                     }
-
                 }
             }
         }
-    }
 
+    }
     public void findLine(boolean direction, double speed) {
         if (opModeIsActive()) {
-            double colorWhite = 135;
+            double colorWhite = 120;
             double rightleft;
             if (direction) {
                 rightleft = 90;
@@ -758,56 +743,17 @@ public class RealAutoRed extends LinearOpMode {
         }
     }
     public void ballDoorDown(){
-        ballDoor.setPosition(.4);
+        ballDoor.setPosition(.40);
     }
     public void ballDoorUp(){
         ballDoor.setPosition(.9);
     }
+
     public void clawStart(){
 
     }
+
 }
-   /* public void lineUpLine(boolean color){
-        if (opModeIsActive()){
-            double colorWhite = 150;
-
-            double lowWhite = 0;
-            double highWhite = 0;
-
-            while(opModeIsActive() && ((lowWhite < colorWhite) || (highWhite < colorWhite))){
-                c3Reader.write8(c1CmdReg, c1ActiveCmd);
-                c3Cache = c3Reader.read(c1StartReg, c1ReadLength);
-                c4Reader.write8(c1CmdReg, c1ActiveCmd);
-                c4Cache = c4Reader.read(c1StartReg, c1ReadLength);
-                highWhite = (c4Cache[16] &0xff);
-                lowWhite = (c3Cache[16] &0xff);
-                telemetry.addData("Back White", lowWhite);
-                telemetry.addData("Upper White", highWhite);
-                telemetry.update();
-
-                if (color){
-                    if (lowWhite < colorWhite){
-                        frontRight.setPower(-0.25);
-                    }
-                    else if(highWhite < colorWhite){
-                        backLeft.setPower(-0.25);
-                    }
-                }
-                else {
-                    if (lowWhite < colorWhite){
-                        frontRight.setPower(0.25);
-                    }
-                    else if(highWhite < colorWhite){
-                        backLeft.setPower(0.25);
-                    }
-                }
-            }*/
-
-
-
-
-
-
 
 
 
