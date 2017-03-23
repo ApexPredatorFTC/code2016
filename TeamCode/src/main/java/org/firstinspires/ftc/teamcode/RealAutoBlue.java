@@ -194,12 +194,12 @@ public class RealAutoBlue extends LinearOpMode {
         //Do Stuff
         while (opModeIsActive() && on == true) {
 
-            shoot(500, 1);
+            shoot(450, 1);
             ballDoorDown();
             sleep(1400);
-            shoot(500, 1);
+            shoot(450, 1);
 
-            Move(73, 1, 130);
+            Move(77, 1, 130);
             GyroTurn(180);
             untilButton(0.4);
             squareWall(0.4);
@@ -207,6 +207,8 @@ public class RealAutoBlue extends LinearOpMode {
             flipperDownBlue();
 
             findLine(false, 0.24);
+            //_________________________
+            Move(.45,.4,90);
             Move(3, 0.5, 0);
             chooseColor(false);
             Move(4, 1, 180);
@@ -218,14 +220,16 @@ public class RealAutoBlue extends LinearOpMode {
             flipperDownBlue();
 
             findLine(false, 0.24);
+            //_________________________
+            Move(.4,.4,90);
             Move(3.7, 0.4, 0);
 
             chooseColor(false);
             Move(3, 0.8, 180);
             Move(66, 1, 132);
-            GyroTurn(90);
-            Move(4, 1, 270);
-            GyroTurn(90);
+            GyroTurn(45);
+            Move(8, 1, (135+90));
+
             on = false;
             //Move(70, 1, 135);
         }

@@ -189,10 +189,10 @@ public class AltRed extends LinearOpMode{
         //Do Stuff
         while (opModeIsActive() && on == true) {
 
-            shoot(500, 1);
+            shoot(450, 1);
             ballDoorDown();
             sleep(1400);
-            shoot(500, 1);
+            shoot(450, 1);
 
             Move(97, 1, 70);
 

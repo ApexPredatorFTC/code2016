@@ -214,10 +214,10 @@ public class RealAutoRed extends LinearOpMode {
         //Do Stuff
         while (opModeIsActive() && on == true) {
             clawStart();
-            shoot(500, 1);
+            shoot(450, 1);
             ballDoorDown();
             sleep(1400);
-            shoot(500 , 1);
+            shoot(450 , 1);
 
             Move(63, 1, 47);
             untilButton(0.35);

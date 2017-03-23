@@ -214,10 +214,10 @@ public class AltBlue extends LinearOpMode {
         //Do Stuff
         while (opModeIsActive() && on == true) {
             clawStart();
-            shoot(500, 1);
+            shoot(450, 1);
             ballDoorDown();
             sleep(1400);
-            shoot(500 , 1);
+            shoot(450 , 1);
 
             Move(97 ,1 , 110);
             GyroTurn(180);
@@ -227,6 +227,7 @@ public class AltBlue extends LinearOpMode {
             flipperDownBlue();
 
             findLine(false, .24);
+            Move(.6,.4,90);
             Move(4, 0.5, 0);
             chooseColor(false);
             Move(5, 1, 180);
@@ -236,13 +237,15 @@ public class AltBlue extends LinearOpMode {
 
             untilButton(.4);
             squareWall(.4);
+            Move(2,1,180);
             flipperDownRed();
             findLine(true, .24);
-            Move(3, 0.5, 0);
+            Move(4, 0.5, 0);
             chooseColor(false);
             Move(4, 1, 180);
-            Move(30, 1 , 180);
+            Move(34, 1 , 180);
             GyroTurn(45);
+            Move(12,1,225);
 
             on = false;
         }
